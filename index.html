@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<script>
+  // カウンターが止まる分数を記入します
+  // 「2」と入れた場合、1分経過で文字が赤くなり、2分経過でタイマーが停止します
+  // 1以上の整数のみ記入ください
+  const max = 2
+</script>
+
+<head>
+  <meta charset="utf-8">
+  <title>OBSのタイマー</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
+    :root {
+      --border-color: #302833;
+      --font-color: #F6F7F8;
+      --limit-color: #E1344C;
+    }
+    body {
+      margin: 0;
+    }
+    div {
+      color: var(--font-color);
+      font-family: 'Open Sans', sans-serif;
+      font-size: 7rem;
+      letter-spacing: 0.05em;
+      text-align: center;
+      text-shadow:
+        var(--border-color) 4px 0px, var(--border-color) -4px 0px, var(--border-color) 0px -4px, var(--border-color) 0px 4px,
+        var(--border-color) 4px 4px, var(--border-color) -4px 4px, var(--border-color) 4px -4px, var(--border-color) -4px -4px,
+        var(--border-color) 2px 4px, var(--border-color) -2px 4px, var(--border-color) 2px -4px, var(--border-color) -2px -4px,
+        var(--border-color) 4px 2px, var(--border-color) -4px 2px, var(--border-color) 4px -2px, var(--border-color) -4px -2px;
+    }
+    .limit {
+      color: var(--limit-color);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="timer">00:00:00</div>
+</body>
+
+<script>
+  let elm = null
+  let isClick = false
+  let seconds = 0
+  const zeroPadding = num => {
+    const str = String(num)
+    if (str.length === 1) return `0${str}`
+    return str
+  }
+  const count = _ => {
+    if (isClick === false) return
+    seconds++
+    write()
+    if (seconds < max * 100 * 60) setTimeout(count, 10)
+  }
+  const write = _ => {
+    const msec = zeroPadding(Math.floor(seconds) % 100)
+    const sec = zeroPadding(Math.floor(seconds / 100) % 60)
+    const min = zeroPadding(Math.floor(seconds / 100 / 60) % 60)
+    if (min > max - 2) elm.classList.add('limit')
+    elm.innerHTML = `${min}:${sec}:${msec}`
+  }
+  window.onload = _ => {
+    elm = document.getElementById('timer')
+    elm.addEventListener('click', _ => {
+      if (isClick === false) {
+        isClick = true
+        count()
+      } else {
+        isClick = false
+        seconds = 0
+        write()
+        elm.classList.remove('limit')
+      }
+    })
+  }
+</script>
+
+</html>
